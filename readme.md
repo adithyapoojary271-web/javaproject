@@ -40,11 +40,9 @@ Navigate into your system's source workspace directory and invoke the compilatio
 cd backend
 # Build the artifact binaries while bypassing unit testing profiles
 mvn clean package -DskipTests
-The local server instance will initialize and bind natively to standard port: http://localhost:80802. Initializing the Web InterfaceBecause the user dashboard consists of decoupled static files, it requires no server compilation steps:Open your system file explorer, navigate to /frontend, and double-click index.html to launch the runtime view inside your default browser.🚀 Cloud Deployment Configuration (Render + Docker)Due to the deprecation of legacy OpenJDK packages on modern container registries, this architecture relies on a multi-stage Docker deployment utilizing optimized Eclipse Temurin runtimes.Render Build ParametersWhen linking your repository to Render, select Docker from the runtime environment options and map the configuration profiles exactly as follows:Parameter ProfileValue Configuration SetupRuntime EnvironmentDockerRoot Directorybackend (Forces container tracking inside the subfolder)Instance Tier TypeFree ($0/mo)Enterprise Data Multi-Stage Container Layout (Dockerfile)The built-in container compilation profile manages compilation footprints natively:Dockerfile# Stage 1: Dependency allocation and package resolution
-FROM maven:3.8.5-openjdk-17 AS build
-WORKDIR /app
-COPY . .
-RUN mvn clean package -DskipTests
+
+# Initialize the Spring Boot runtime application
+mvn spring-boot:run
 ```
 # Stage 2: Minimalist execution engine configuration
 FROM eclipse-temurin:17-jre-alpine
