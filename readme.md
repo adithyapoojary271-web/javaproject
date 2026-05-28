@@ -1,55 +1,223 @@
 # Excel Core Bank Management System
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)
-![Java Version](https://img.shields.io/badge/Java-17%2B-blue?style=flat-square&logo=java)
-![Framework](https://img.shields.io/badge/Framework-Spring%20Boot%203.2-spring?style=flat-square&logo=springboot)
-![Database Engine](https://img.shields.io/badge/Database-Apache%20POI%20Excel-green?style=flat-square&logo=microsoft-excel)
-![Deployment](https://img.shields.io/badge/Deployment-Render%20%2B%20Docker-orange?style=flat-square&logo=render)
+![Java Version](https://img.shields.io/badge/Java-17%2B-blue?style=flat-square\&logo=java)
+![Framework](https://img.shields.io/badge/Framework-Spring%20Boot%203.2-spring?style=flat-square\&logo=springboot)
+![Database Engine](https://img.shields.io/badge/Database-Apache%20POI%20Excel-green?style=flat-square\&logo=microsoft-excel)
+![Deployment](https://img.shields.io/badge/Deployment-Render%20%2B%20Docker-orange?style=flat-square\&logo=render)
 
-A clean, minimalist, high-performance web core-banking application mimicking enterprise digital banking infrastructures like YONO SBI. The application pairs a robust **Spring Boot REST API** with a real-time, file-based **Apache POI Excel Storage Engine** and a task-focused frontend built with **Tailwind CSS**.
-
----
-
-## 🌐 Live Web Deployment
-The user interface is hosted publicly and can be accessed at:
-👉 **[Excel Core Bank Dashboard](https://adithyapoojary271-web.github.io/javaproject/frontend/)**
+A modern, lightweight, enterprise-style core banking application inspired by digital banking platforms like YONO SBI. The system combines a powerful **Spring Boot backend**, a real-time **Apache POI Excel-based storage engine**, and a responsive **Tailwind CSS frontend**.
 
 ---
 
-## 🏗️ System Architecture
+# 🌐 Live Demo
 
-The application splits computational workloads into two highly decoupled tiers:
-
-1. **Backend Engine (`/backend`)**: A Spring Boot service managing runtime thread safety, handling explicit REST endpoints, and performing read/write filesystem operations natively on an active Excel workbook ledger (`BankDatabase.xlsx`).
-2. **Client Dashboard (`/frontend`)**: A modular, state-driven single-page interface focusing on high-contrast text menus, data-payload field sanitization, and explicit session-reversal paths.
+👉 **Frontend Dashboard:**
+https://adithyapoojary271-web.github.io/javaproject/frontend/
 
 ---
 
-## 🛠️ Local Environment Setup
+# 🏗️ Project Architecture
 
-### Prerequisites
-Ensure your local development machine has the following dependencies configured:
-- **Java Development Kit (JDK 17 or higher)**
-- **Apache Maven** (Optional if using the provided wrapper script)
-- **Modern Web Browser** (Chrome, Edge, Safari, or Firefox)
+The application is divided into two independent layers:
 
-### 1. Launching the Backend REST API
-Navigate into your system's source workspace directory and invoke the compilation sequence:
+## Backend (`/backend`)
+
+A Spring Boot REST API responsible for:
+
+* Account creation and validation
+* Deposit and withdrawal processing
+* Excel file read/write operations
+* Secure transaction handling
+* Thread-safe banking operations
+
+### Core Technologies
+
+* Java 17
+* Spring Boot 3.2
+* Apache POI
+* Maven
+
+---
+
+## Frontend (`/frontend`)
+
+A clean, responsive single-page banking dashboard built using:
+
+* HTML5
+* Tailwind CSS
+* Vanilla JavaScript
+
+### Features
+
+* Minimalist banking UI
+* Mobile responsive layout
+* Smooth animations
+* Secure form validation
+* Real-time API interaction
+
+---
+
+# 🛠️ Local Setup Guide
+
+## Prerequisites
+
+Install the following before running the project:
+
+* Java JDK 17+
+* Apache Maven
+* Modern Browser (Chrome/Edge/Firefox/Safari)
+
+---
+
+# 🚀 Running the Backend
+
+Open terminal inside the backend folder:
 
 ```bash
 cd backend
-# Build the artifact binaries while bypassing unit testing profiles
+
+# Build project
 mvn clean package -DskipTests
 
-# Initialize the Spring Boot runtime application
+# Start Spring Boot server
 mvn spring-boot:run
 ```
-# Stage 2: Minimalist execution engine configuration
-FROM eclipse-temurin:17-jre-alpine
+
+Backend runs on:
+
+```txt
+http://localhost:8080
+```
+
+---
+
+# 💻 Running the Frontend
+
+The frontend is fully static.
+
+Simply:
+
+1. Open the `frontend/` folder
+2. Double-click `index.html`
+
+Or use VS Code Live Server for better development experience.
+
+---
+
+# 🐳 Docker Deployment
+
+This project supports cloud deployment using Docker and Render.
+
+## Dockerfile
+
+```dockerfile
+# Stage 1 - Build
+FROM maven:3.8.5-openjdk-17 AS build
+
 WORKDIR /app
+
+COPY . .
+
+RUN mvn clean package -DskipTests
+
+# Stage 2 - Runtime
+FROM eclipse-temurin:17-jre-alpine
+
+WORKDIR /app
+
 COPY --from=build /app/target/excel-core-bank-0.0.1-SNAPSHOT.jar app.jar
+
 EXPOSE 8080
+
 ENTRYPOINT ["java", "-jar", "app.jar"]
-🔐 Pre-Seeded System CredentialsFor rapid verification of functional pipelines after initialization, utilize the default master records:Seeded Customer Profile: Account Number: 12345 | Security PIN: 1111Administrative Access Key: Verification Passphrase Token: admin🛡️ Ephemeral File System NoticeOperational Note: Free-tier container hosting environments (like Render) employ ephemeral filesystems. Every time the cloud instance restarts or spins down due to inactivity, the BankDatabase.xlsx file will automatically revert back to its initial seeded state. For permanent long-term data storage, connect the Spring Service to an external relational cloud instance (e.g., PostgreSQL).
-# Initialize the Spring Boot runtime application
-mvn spring-boot:run
+```
+
+---
+
+# ☁️ Render Deployment Settings
+
+| Setting        | Value   |
+| -------------- | ------- |
+| Environment    | Docker  |
+| Root Directory | backend |
+| Plan           | Free    |
+
+---
+
+# 🔐 Default Credentials
+
+## Customer Login
+
+```txt
+Account Number: 12345
+PIN: 1111
+```
+
+## Admin Access
+
+```txt
+Admin Key: admin
+```
+
+---
+
+# 🛡️ Important Hosting Note
+
+> Free hosting providers like Render use ephemeral file systems.
+> This means `BankDatabase.xlsx` resets whenever the server restarts.
+
+For permanent storage, migrate to:
+
+* PostgreSQL
+* MySQL
+* MongoDB
+
+---
+
+# 📂 Project Structure
+
+```txt
+javaproject/
+│
+├── backend/
+│   ├── src/
+│   ├── Dockerfile
+│   ├── pom.xml
+│   └── BankDatabase.xlsx
+│
+├── frontend/
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+│
+└── README.md
+```
+
+---
+
+# ✨ Key Features
+
+* Excel-powered banking database
+* Spring Boot REST API
+* Deposit / Withdraw operations
+* Account validation
+* Docker container deployment
+* Responsive banking dashboard
+* Tailwind-based UI
+* Lightweight architecture
+
+---
+
+# 📜 License
+
+This project is intended for educational and portfolio demonstration purposes.
+
+---
+
+# 👨‍💻 Developer
+
+Developed by **Adithya Poojary**
+
+GitHub Repository:
+https://github.com/adithyapoojary271-web/javaproject
