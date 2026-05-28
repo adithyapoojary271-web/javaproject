@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Core Bank System</title>
+    <title>Core Banking Console</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -20,68 +20,81 @@
         }
     </script>
     <style>
-        body { background-color: #24244B; color: #FFFFFF; }
-        input::placeholder { color: #CFD6E0; opacity: 0.6; }
+        body { background-color: #24244B; color: #FFFFFF; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        input::placeholder { color: #CFD6E0; opacity: 0.5; }
+        .yono-grid-btn { background-color: #1B1B3A; border: 1px solid rgba(207, 214, 224, 0.15); transition: all 0.2s ease; }
+        .yono-grid-btn:hover { border-color: #FFFFFF; }
     </style>
 </head>
-<body class="min-h-screen font-sans antialiased flex flex-col">
+<body class="min-h-screen flex flex-col antialiased">
 
-    <header class="bg-brandSurface border-b border-slate-700 p-4">
+    <header class="bg-brandSurface border-b border-slate-700/80 px-6 py-4">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <div class="cursor-pointer" onclick="goToHome()">
-                <span class="text-lg font-bold tracking-wider text-brandWhite uppercase">Excel Core Bank</span>
+            <div class="cursor-pointer flex flex-col" onclick="goToHome()">
+                <span class="text-base font-bold tracking-wider text-brandWhite uppercase">CORE BANK SYSTEM</span>
+                <span class="text-[10px] tracking-widest text-brandGray opacity-70">DIGITAL LEDGER INFRASTRUCTURE</span>
             </div>
             
-            <div id="nav-actions" class="flex items-center space-x-4">
-                <button onclick="switchPortal('user')" class="px-4 py-2 text-sm bg-slate-700 hover:bg-slate-600 text-brandWhite font-medium rounded transition">
+            <div id="nav-actions" class="flex items-center space-x-3">
+                <button onclick="switchPortal('user')" class="px-4 py-2 text-xs uppercase tracking-wider bg-slate-700 hover:bg-slate-600 text-brandWhite font-semibold rounded transition">
                     Customer Portal
                 </button>
-                <button onclick="switchPortal('admin')" class="px-4 py-2 text-sm bg-slate-100 hover:bg-slate-200 text-brandDark font-medium rounded transition">
+                <button onclick="switchPortal('admin')" class="px-4 py-2 text-xs uppercase tracking-wider bg-slate-100 hover:bg-slate-200 text-brandDark font-semibold rounded transition">
                     Manager Portal
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="flex-grow max-w-5xl w-full mx-auto p-6 md:p-12">
+    <main class="flex-grow max-w-6xl w-full mx-auto p-6 md:p-10">
 
-        <section id="home-screen" class="max-w-xl mx-auto text-center py-16 space-y-8">
-            <div class="space-y-2">
-                <h1 class="text-3xl font-bold text-brandWhite tracking-tight">Enterprise Ledger Core</h1>
-                <p class="text-brandGray text-sm">Select an access gateway to begin managing secure database sessions.</p>
+        <section id="home-screen" class="max-w-3xl mx-auto space-y-8 py-6">
+            <div class="border-l-4 border-slate-300 pl-4 space-y-1">
+                <h1 class="text-2xl font-bold tracking-tight text-brandWhite uppercase">Welcome to Digital Banking</h1>
+                <p class="text-brandGray text-xs">Select your account gateway to initialize an active ledger tracking session.</p>
             </div>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
-                <div onclick="switchPortal('user')" class="bg-brandSurface border border-slate-700 p-6 rounded cursor-pointer hover:border-brandWhite transition text-left">
-                    <h3 class="font-bold text-base text-brandWhite">Customer Access</h3>
-                    <p class="text-xs text-brandGray mt-2">Check net balances, log deposits, or review statement historical registries.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div onclick="switchPortal('user')" class="yono-grid-btn p-6 rounded cursor-pointer flex flex-col justify-between min-h-[140px]">
+                    <div>
+                        <span class="text-xs font-bold tracking-wider uppercase text-brandGray opacity-60">Services</span>
+                        <h3 class="font-bold text-lg text-brandWhite mt-1">Customer Dashboard</h3>
+                    </div>
+                    <p class="text-xs text-brandGray mt-4">View real-time balances, register instant secure deposits, and extract statement history logs.</p>
                 </div>
-                <div onclick="switchPortal('admin')" class="bg-brandSurface border border-slate-700 p-6 rounded cursor-pointer hover:border-brandWhite transition text-left">
-                    <h3 class="font-bold text-base text-brandWhite">Administrative Access</h3>
-                    <p class="text-xs text-brandGray mt-2">Perform master record audits, configure user balances, and apply compound yields.</p>
+                
+                <div onclick="switchPortal('admin')" class="yono-grid-btn p-6 rounded cursor-pointer flex flex-col justify-between min-h-[140px]">
+                    <div>
+                        <span class="text-xs font-bold tracking-wider uppercase text-brandGray opacity-60">Administration</span>
+                        <h3 class="font-bold text-lg text-brandWhite mt-1">Manager Control Console</h3>
+                    </div>
+                    <p class="text-xs text-brandGray mt-4">Execute core memory audits, clear database rows, provision user IDs, and compute periodic yields.</p>
                 </div>
             </div>
         </section>
 
-        <section id="user-login" class="hidden bg-brandSurface p-8 rounded border border-slate-700 max-w-sm mx-auto space-y-6">
+        <section id="user-login" class="hidden bg-brandSurface p-8 rounded border border-slate-700 max-w-md mx-auto space-y-6 shadow-xl">
             <div class="flex items-center justify-between border-b border-slate-700 pb-3">
-                <h2 class="text-md font-bold tracking-wider uppercase text-brandWhite">Customer Identity Verification</h2>
-                <button onclick="goToHome()" class="text-xs text-brandGray hover:text-brandWhite transition">
-                    [ Back ]
+                <div class="flex flex-col">
+                    <h2 class="text-xs font-bold tracking-wider uppercase text-brandWhite">Identity Verification</h2>
+                    <span class="text-[10px] text-brandGray opacity-60">Secure Shell Gate</span>
+                </div>
+                <button onclick="goToHome()" class="text-xs text-brandGray hover:text-brandWhite font-semibold transition">
+                    [ Return to Home ]
                 </button>
             </div>
             
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs uppercase tracking-wider text-brandGray mb-1">Account Registration Number</label>
-                    <input type="text" id="login-acc" placeholder="e.g., 12345" class="w-full bg-brandDark border border-slate-700 p-2.5 text-sm text-brandWhite focus:outline-none focus:border-brandGray transition font-mono">
+                    <label class="block text-[11px] uppercase tracking-wider text-brandGray mb-1">Account Assignment Number</label>
+                    <input type="text" id="login-acc" placeholder="Enter Registration Number" class="w-full bg-brandDark border border-slate-700 p-3 text-sm text-brandWhite focus:outline-none focus:border-brandWhite transition font-mono">
                 </div>
                 <div>
-                    <label class="block text-xs uppercase tracking-wider text-brandGray mb-1">4-Digit Security PIN</label>
-                    <input type="password" id="login-pin" placeholder="••••" maxlength="4" class="w-full bg-brandDark border border-slate-700 p-2.5 text-sm text-brandWhite focus:outline-none focus:border-brandGray transition font-mono">
+                    <label class="block text-[11px] uppercase tracking-wider text-brandGray mb-1">4-Digit Security PIN</label>
+                    <input type="password" id="login-pin" placeholder="Enter PIN" maxlength="4" class="w-full bg-brandDark border border-slate-700 p-3 text-sm text-brandWhite focus:outline-none focus:border-brandWhite transition font-mono tracking-widest">
                 </div>
-                <button onclick="handleUserLogin()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-brandDark font-bold text-sm rounded transition">
-                    Verify & Authenticate
+                <button onclick="handleUserLogin()" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-brandDark font-bold text-xs uppercase tracking-wider rounded transition">
+                    Validate Session Credentials
                 </button>
             </div>
         </section>
@@ -89,40 +102,41 @@
         <section id="user-dashboard" class="hidden space-y-6">
             <div class="bg-brandSurface p-6 rounded border border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h2 id="user-name" class="text-xl font-bold text-brandWhite">...</h2>
-                    <p id="user-acc-display" class="text-xs font-mono text-brandGray mt-1">Acc ID: </p>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-brandGray opacity-50">Active Session Workspace</span>
+                    <h2 id="user-name" class="text-xl font-bold tracking-tight text-brandWhite uppercase mt-0.5">...</h2>
+                    <p id="user-acc-display" class="text-xs font-mono text-brandGray mt-1">ACC REF ID: </p>
                 </div>
-                <div class="bg-brandDark border border-slate-700 px-6 py-3 rounded min-w-[200px]">
-                    <span class="block text-[10px] uppercase tracking-wider text-brandGray">Settled Net Balance</span>
-                    <span id="user-balance" class="text-xl font-bold text-brandWhite font-mono">$0.00</span>
+                <div class="bg-brandDark border border-slate-700 px-6 py-4 rounded min-w-[240px] text-left sm:text-right">
+                    <span class="block text-[10px] uppercase tracking-wider text-brandGray opacity-60">Settled Liquidity Balance</span>
+                    <span id="user-balance" class="text-2xl font-bold text-brandWhite font-mono tracking-tight">$0.00</span>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-brandSurface p-6 rounded border border-slate-700 space-y-4 h-fit">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-brandSurface p-6 rounded border border-slate-700 space-y-5 h-fit">
                     <div class="flex items-center justify-between border-b border-slate-700 pb-2">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-brandWhite">Post Transaction</h3>
-                        <button onclick="goToHome()" class="text-xs text-brandGray hover:text-brandWhite transition">
-                            [ Exit Portal ]
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-brandWhite">Execute Operations</h3>
+                        <button onclick="goToHome()" class="text-xs text-brandGray hover:text-brandWhite font-semibold transition">
+                            [ Logout ]
                         </button>
                     </div>
                     <div>
-                        <label class="block text-xs text-brandGray mb-1">Target Statement Amount ($)</label>
-                        <input type="number" id="tx-amount" min="1" placeholder="0.00" class="w-full bg-brandDark border border-slate-700 p-2.5 text-sm text-brandWhite font-mono focus:outline-none focus:border-brandGray">
+                        <label class="block text-xs text-brandGray mb-1.5">Operation Capital Input Amount ($)</label>
+                        <input type="number" id="tx-amount" min="1" placeholder="0.00" class="w-full bg-brandDark border border-slate-700 p-3 text-sm text-brandWhite font-mono focus:outline-none focus:border-brandWhite">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
-                        <button onclick="executeTx('deposit')" class="py-2 bg-slate-100 hover:bg-slate-200 text-brandDark text-xs font-bold rounded transition">
+                        <button onclick="executeTx('deposit')" class="py-2.5 bg-slate-100 hover:bg-slate-200 text-brandDark text-xs font-bold uppercase tracking-wider rounded transition">
                             Deposit
                         </button>
-                        <button onclick="executeTx('withdraw')" class="py-2 bg-slate-700 hover:bg-slate-600 text-brandWhite text-xs font-bold rounded transition">
+                        <button onclick="executeTx('withdraw')" class="py-2.5 bg-slate-700 hover:bg-slate-600 text-brandWhite text-xs font-bold uppercase tracking-wider rounded transition">
                             Withdraw
                         </button>
                     </div>
                 </div>
 
-                <div class="bg-brandSurface p-6 rounded border border-slate-700 md:col-span-2 flex flex-col">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-brandWhite border-b border-slate-700 pb-2 mb-3">Historical Ledger Entries</h3>
-                    <ul id="tx-history" class="space-y-1 text-xs max-h-48 overflow-y-auto font-mono text-brandGray divide-y divide-slate-800">
+                <div class="bg-brandSurface p-6 rounded border border-slate-700 lg:col-span-2 flex flex-col">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-brandWhite border-b border-slate-700 pb-2 mb-3">Passbook Ledger Registries</h3>
+                    <ul id="tx-history" class="space-y-1 text-xs max-h-56 overflow-y-auto font-mono text-brandGray divide-y divide-slate-800">
                         </ul>
                 </div>
             </div>
@@ -131,54 +145,54 @@
         <section id="admin-portal" class="hidden space-y-6">
             <div class="bg-brandSurface p-6 rounded border border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h2 class="text-lg font-bold uppercase tracking-wider text-brandWhite">Master Ledger Console</h2>
-                    <p class="text-xs text-brandGray mt-1">Direct system memory manipulation suite</p>
+                    <h2 class="text-base font-bold uppercase tracking-wider text-brandWhite">System Memory Management</h2>
+                    <p class="text-xs text-brandGray opacity-60">Direct system cluster ledger array modifications</p>
                 </div>
                 <div class="flex items-center space-x-2 w-full sm:w-auto">
-                    <button onclick="applyMassInterest()" class="w-full sm:w-auto px-4 py-2 bg-slate-700 hover:bg-slate-600 text-brandWhite text-xs font-bold rounded transition">
-                        Execute Interest Matrix (4.5%)
+                    <button onclick="applyMassInterest()" class="w-full sm:w-auto px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-brandWhite text-xs font-bold uppercase tracking-wider rounded transition">
+                        Process Yield Matrix (4.5%)
                     </button>
-                    <button onclick="goToHome()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-brandDark text-xs font-bold rounded transition">
-                        [ Close Panel ]
+                    <button onclick="goToHome()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-brandDark text-xs font-bold uppercase tracking-wider rounded transition">
+                        [ Terminate Session ]
                     </button>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="bg-brandSurface p-6 rounded border border-slate-700 space-y-4 h-fit">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-brandWhite border-b border-slate-700 pb-2">Provision Profile</h3>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-brandWhite border-b border-slate-700 pb-2">Provision New Profile</h3>
                     <div class="space-y-3 text-xs">
                         <div>
-                            <label class="block text-brandGray mb-1">Account Index Identifier</label>
-                            <input type="text" id="adm-acc" placeholder="e.g., 99887" class="w-full bg-brandDark border border-slate-700 p-2 text-brandWhite font-mono focus:outline-none">
+                            <label class="block text-brandGray mb-1">Set Account Number String</label>
+                            <input type="text" id="adm-acc" placeholder="e.g., 99887" class="w-full bg-brandDark border border-slate-700 p-2.5 text-brandWhite font-mono focus:outline-none focus:border-brandWhite">
                         </div>
                         <div>
-                            <label class="block text-brandGray mb-1">Legal Holder Identity</label>
-                            <input type="text" id="adm-name" placeholder="John Doe" class="w-full bg-brandDark border border-slate-700 p-2 text-brandWhite focus:outline-none">
+                            <label class="block text-brandGray mb-1">Legal Customer Full Name</label>
+                            <input type="text" id="adm-name" placeholder="John Doe" class="w-full bg-brandDark border border-slate-700 p-2.5 text-brandWhite focus:outline-none focus:border-brandWhite">
                         </div>
                         <div>
-                            <label class="block text-brandGray mb-1">Set Administrative Authentication PIN</label>
-                            <input type="password" id="adm-pin" placeholder="0000" maxlength="4" class="w-full bg-brandDark border border-slate-700 p-2 text-brandWhite font-mono focus:outline-none">
+                            <label class="block text-brandGray mb-1">Assign Verification PIN</label>
+                            <input type="password" id="adm-pin" placeholder="0000" maxlength="4" class="w-full bg-brandDark border border-slate-700 p-2.5 text-brandWhite font-mono focus:outline-none focus:border-brandWhite">
                         </div>
                         <div>
-                            <label class="block text-brandGray mb-1">Allocation Opening Capital ($)</label>
-                            <input type="number" id="adm-bal" placeholder="0.00" class="w-full bg-brandDark border border-slate-700 p-2 text-brandWhite font-mono focus:outline-none">
+                            <label class="block text-brandGray mb-1">Opening Capital Allocation ($)</label>
+                            <input type="number" id="adm-bal" placeholder="0.00" class="w-full bg-brandDark border border-slate-700 p-2.5 text-brandWhite font-mono focus:outline-none focus:border-brandWhite">
                         </div>
-                        <button onclick="createAccount()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-brandDark font-bold rounded transition mt-2">
-                            Commit Entry Profile
+                        <button onclick="createAccount()" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-brandDark font-bold uppercase tracking-wider rounded transition mt-2">
+                            Commit Registry Row
                         </button>
                     </div>
                 </div>
 
                 <div class="bg-brandSurface p-6 rounded border border-slate-700 lg:col-span-2">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-brandWhite mb-3 border-b border-slate-700 pb-2">Master Database Index</h3>
-                    <div class="overflow-x-auto border border-slate-700 max-h-[340px]">
+                    <div class="overflow-x-auto border border-slate-700/60 max-h-[360px]">
                         <table class="w-full text-left text-xs border-collapse font-mono">
                             <thead>
-                                <tr class="bg-brandDark text-brandGray border-b border-slate-700 uppercase tracking-wider">
+                                <tr class="bg-brandDark text-brandGray border-b border-slate-700 uppercase tracking-wider opacity-70">
                                     <th class="p-3 font-semibold">Account ID</th>
                                     <th class="p-3 font-semibold">Holder Registry</th>
-                                    <th class="p-3 font-semibold text-right">Aggregated Balance</th>
+                                    <th class="p-3 font-semibold text-right">Aggregated Net Balance</th>
                                 </tr>
                             </thead>
                             <tbody id="admin-ledger-body" class="divide-y divide-slate-800 text-brandWhite">
@@ -191,5 +205,6 @@
 
     </main>
 
+    <script src="app.js"></script>
 </body>
 </html>
