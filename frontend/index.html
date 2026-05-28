@@ -29,7 +29,7 @@
             color: #CFD6E0;
             opacity: 0.4;
         }
-        /* Custom Glassmorphism Panels */
+        /* Glassmorphism Classes */
         .glass-panel {
             background: rgba(27, 27, 58, 0.7);
             backdrop-filter: blur(16px);
@@ -63,7 +63,7 @@
     <main class="flex-grow flex items-center justify-center p-4 md:p-8">
         <div class="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
             
-            <div id="left-branding" class="space-y-8">
+            <div id="left-branding" class="space-y-8 transition-opacity duration-300">
                 <div class="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs tracking-wider text-brandGray uppercase font-medium">
                     Core Database Architecture
                 </div>
@@ -74,7 +74,7 @@
                 </h1>
 
                 <p class="text-brandGray text-sm md:text-base leading-relaxed max-w-md opacity-80">
-                    A lightweight core banking system middleware powered by Spring Boot frameworks, native Apache POI Excel file serialization, and task-focused UI views.
+                    A lightweight core banking platform middleware powered by Spring Boot frameworks, native Apache POI Excel file serialization, and task-focused UI views.
                 </p>
 
                 <div class="flex flex-wrap gap-3">
@@ -207,194 +207,6 @@
         Instructional Ledger Application • Portfolio Interface Architecture
     </footer>
 
-    <script>
-        const API_URL = 'https://javaproject-1i9k.onrender.com/api/bank';
-        let currentSessionUser = null;
-
-        window.addEventListener('DOMContentLoaded', () => {
-            goToHome();
-        });
-
-        function goToHome() {
-            currentSessionUser = null;
-            
-            // Toggle Display View States
-            document.getElementById('user-login-view').classList.remove('hidden');
-            document.getElementById('user-dashboard-view').classList.add('hidden');
-            document.getElementById('admin-portal-view').classList.add('hidden');
-            document.getElementById('left-branding').classList.remove('opacity-30');
-            document.getElementById('header-actions').classList.remove('invisible');
-
-            // Clear Input Form Data Elements
-            document.getElementById('login-acc').value = '';
-            document.getElementById('login-pin').value = '';
-        }
-
-        function switchPortal(portal) {
-            if (portal === 'user') {
-                if (currentSessionUser) {
-                    document.getElementById('user-login-view').classList.add('hidden');
-                    document.getElementById('user-dashboard-view').classList.remove('hidden');
-                    document.getElementById('admin-portal-view').classList.add('hidden');
-                } else {
-                    goToHome();
-                }
-            } else if (portal === 'admin') {
-                const pass = prompt("Provide Administrative System Verification Passkey:");
-                if (pass === 'admin') {
-                    document.getElementById('user-login-view').classList.add('hidden');
-                    document.getElementById('user-dashboard-view').classList.add('hidden');
-                    document.getElementById('admin-portal-view').classList.remove('hidden');
-                    document.getElementById('left-branding').classList.add('opacity-30');
-                    document.getElementById('header-actions').classList.add('invisible');
-                    loadMasterLedger();
-                } else {
-                    alert("Authorization Denied: Revoked Security Token.");
-                    goToHome();
-                }
-            }
-        }
-
-        async function handleUserLogin() {
-            const accountNumber = document.getElementById('login-acc').value.trim();
-            const pin = document.getElementById('login-pin').value.trim();
-
-            if (!accountNumber || !pin) return alert('Incomplete security authorization payload.');
-
-            try {
-                const res = await fetch(`${API_URL}/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ accountNumber, pin })
-                });
-
-                if (res.ok) {
-                    currentSessionUser = await res.json();
-                    currentSessionUser.pin = pin;
-                    updateUserDashboard();
-                    switchPortal('user');
-                } else {
-                    alert('Identity Verification Aborted: Invalid Records.');
-                }
-            } catch (err) {
-                alert('Connection timeout. Remote server instance is booting up.');
-            }
-        }
-
-        function updateUserDashboard() {
-            document.getElementById('user-name').innerText = currentSessionUser.customerName.toUpperCase();
-            document.getElementById('user-acc-display').innerText = `ACC ID REFS: ${currentSessionUser.accountNumber}`;
-            document.getElementById('user-balance').innerText = `$${currentSessionUser.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            
-            const historyList = document.getElementById('tx-history');
-            historyList.innerHTML = '';
-            
-            if (!currentSessionUser.transactionHistory || currentSessionUser.transactionHistory.length === 0) {
-                historyList.innerHTML = `<li class="text-slate-500 italic py-1">No transaction records logged.</li>`;
-                return;
-            }
-
-            [...currentSessionUser.transactionHistory].reverse().forEach(log => {
-                const li = document.createElement('li');
-                li.className = "py-1 text-slate-300";
-                li.innerText = `> ${log}`;
-                historyList.appendChild(li);
-            });
-        }
-
-        async function executeTx(type) {
-            const amountInput = document.getElementById('tx-amount');
-            const amount = parseFloat(amountInput.value);
-            
-            if (isNaN(amount) || amount <= 0) return alert('Invalid numerical data array allocation.');
-
-            try {
-                const res = await fetch(`${API_URL}/${type}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ accountNumber: currentSessionUser.accountNumber, amount: amount })
-                });
-
-                if (res.ok) {
-                    amountInput.value = ''; 
-                    const refresh = await fetch(`${API_URL}/login`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ accountNumber: currentSessionUser.accountNumber, pin: currentSessionUser.pin })
-                    });
-                    currentSessionUser = await refresh.json();
-                    updateUserDashboard();
-                } else {
-                    const errorMsg = await res.text();
-                    alert(`Rejected: ${errorMsg}`);
-                }
-            } catch (err) {
-                alert('Data payload bus transmission fault.');
-            }
-        }
-
-        async function loadMasterLedger() {
-            try {
-                const res = await fetch(`${API_URL}/accounts`);
-                const accounts = await res.json();
-                const tbody = document.getElementById('admin-ledger-body');
-                tbody.innerHTML = '';
-                
-                accounts.forEach(acc => {
-                    const row = `<tr class="border-b border-white/5">
-                        <td class="p-2 text-slate-400">${acc.accountNumber}</td>
-                        <td class="p-2 text-slate-200 uppercase">${acc.customerName}</td>
-                        <td class="p-2 text-right text-slate-100 font-bold">$${acc.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    </tr>`;
-                    tbody.innerHTML += row;
-                });
-            } catch (err) {
-                alert('Data array parsing exception.');
-            }
-        }
-
-        async function createAccount() {
-            const accountNumber = document.getElementById('adm-acc').value.trim();
-            const customerName = document.getElementById('adm-name').value.trim();
-            const pinStr = document.getElementById('adm-pin').value.trim();
-            const balanceStr = document.getElementById('adm-bal').value.trim();
-
-            if (!accountNumber || !customerName || !pinStr || !balanceStr) return alert('Mandatory validation fields missing.');
-
-            try {
-                const res = await fetch(`${API_URL}/account`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ accountNumber, customerName, pin: parseInt(pinStr), balance: parseFloat(balanceStr) })
-                });
-
-                if (res.ok) {
-                    alert('Profile entry append successful.');
-                    loadMasterLedger();
-                    document.getElementById('adm-acc').value = '';
-                    document.getElementById('adm-name').value = '';
-                    document.getElementById('adm-pin').value = '';
-                    document.getElementById('adm-bal').value = '';
-                } else {
-                    const errorMsg = await res.text();
-                    alert(`Aborted: ${errorMsg}`);
-                }
-            } catch (err) {
-                alert('Storage commit serialization fault.');
-            }
-        }
-
-        async function applyMassInterest() {
-            try {
-                const res = await fetch(`${API_URL}/interest`, { method: 'POST' });
-                if (res.ok) {
-                    alert('Compound yield macros updated throughout cluster rows.');
-                    loadMasterLedger();
-                }
-            } catch (err) {
-                alert('Macro evaluation runtime error.');
-            }
-        }
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
