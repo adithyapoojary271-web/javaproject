@@ -1,4 +1,5 @@
-const API_URL = 'http://localhost:8080/api/bank';
+
+const API_URL = 'https://javaproject-1i9k.onrender.com/api/bank';
 let currentSessionUser = null;
 
 function switchPortal(portal) {
