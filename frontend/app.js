@@ -1,26 +1,22 @@
-// Paste your verified live Render host API URL here
 const API_URL = 'https://javaproject-1i9k.onrender.com/api/bank';
 let currentSessionUser = null;
 
-// Initialize view state on boot
+// Enforce consistent base view layer on execution
 window.addEventListener('DOMContentLoaded', () => {
     goToHome();
 });
 
-// Clean Global Return Navigation Flow
 function goToHome() {
-    currentSessionUser = null; // Flush user token state out
+    currentSessionUser = null; // Purge active authentication footprint
     
-    // Toggle View State Elements
+    // UI View Array State Switches
     document.getElementById('home-screen').classList.remove('hidden');
     document.getElementById('user-login').classList.add('hidden');
     document.getElementById('user-dashboard').classList.add('hidden');
     document.getElementById('admin-portal').classList.add('hidden');
-    
-    // Adjust Header Buttons context
     document.getElementById('nav-actions').classList.remove('hidden');
     
-    // Clear inputs safely
+    // Clear Input Data Arrays
     document.getElementById('login-acc').value = '';
     document.getElementById('login-pin').value = '';
 }
@@ -39,13 +35,13 @@ async function switchPortal(portal) {
             document.getElementById('user-login').classList.remove('hidden');
         }
     } else if (portal === 'admin') {
-        const pass = prompt("Enter Administrative Manager Password:");
+        const pass = prompt("Provide System Manager Authentication Token:");
         if (pass === 'admin') {
             document.getElementById('admin-portal').classList.remove('hidden');
             document.getElementById('nav-actions').classList.add('hidden');
             loadMasterLedger();
         } else {
-            alert("Access Denied: Invalid Password Configuration.");
+            alert("Access Denied: Revoked Authorization Signature.");
             goToHome();
         }
     }
@@ -56,7 +52,7 @@ async function handleUserLogin() {
     const pin = document.getElementById('login-pin').value.trim();
 
     if (!accountNumber || !pin) {
-        return alert('Please fill out all credentials.');
+        return alert('Incomplete parameter payloads provided.');
     }
 
     try {
@@ -68,36 +64,34 @@ async function handleUserLogin() {
 
         if (res.ok) {
             currentSessionUser = await res.json();
-            // Cache pin value internally inside state for sync refreshes later
-            currentSessionUser.pin = pin; 
+            currentSessionUser.pin = pin; // Cache session layer access signature
             updateUserDashboard();
             switchPortal('user');
         } else {
-            alert('Access Denied: Invalid Account Number or PIN record.');
+            alert('Authentication Fault: Access Denied.');
         }
     } catch (err) {
-        alert('Server network error. The free cloud engine might be sleeping; give it 1 minute to wake up.');
+        alert('Remote cluster connectivity error. System instance cold boot delay.');
     }
 }
 
 function updateUserDashboard() {
-    document.getElementById('user-name').innerText = currentSessionUser.customerName;
-    document.getElementById('user-acc-display').innerText = `Acc ID Ref: ${currentSessionUser.accountNumber}`;
+    document.getElementById('user-name').innerText = currentSessionUser.customerName.toUpperCase();
+    document.getElementById('user-acc-display').innerText = `ACC ID LOG: ${currentSessionUser.accountNumber}`;
     document.getElementById('user-balance').innerText = `$${currentSessionUser.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     
     const historyList = document.getElementById('tx-history');
     historyList.innerHTML = '';
     
     if (!currentSessionUser.transactionHistory || currentSessionUser.transactionHistory.length === 0) {
-        historyList.innerHTML = `<li class="text-slate-500 italic py-2">No historical transaction operations found.</li>`;
+        historyList.innerHTML = `<li class="text-slate-500 italic py-2">No transaction metadata files synced.</li>`;
         return;
     }
 
-    // Loop backward so latest updates appear at the top
     [...currentSessionUser.transactionHistory].reverse().forEach(log => {
         const li = document.createElement('li');
-        li.className = "py-3 text-slate-300 flex items-center gap-2 border-b border-slate-700/30";
-        li.innerHTML = `<i class="fa-solid fa-caret-right text-emerald-500"></i> <span>${log}</span>`;
+        li.className = "py-2 border-b border-slate-800 tracking-wide text-slate-300";
+        li.innerText = `>> ${log}`;
         historyList.appendChild(li);
     });
 }
@@ -107,7 +101,7 @@ async function executeTx(type) {
     const amount = parseFloat(amountInput.value);
     
     if (isNaN(amount) || amount <= 0) {
-        return alert('Please supply a valid operational decimal value.');
+        return alert('Invalid numeric ledger assignment.');
     }
 
     try {
@@ -118,8 +112,7 @@ async function executeTx(type) {
         });
 
         if (res.ok) {
-            amountInput.value = ''; // Clean field layout
-            // Perform automated session cache refresh
+            amountInput.value = ''; 
             const refresh = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -128,11 +121,11 @@ async function executeTx(type) {
             currentSessionUser = await refresh.json();
             updateUserDashboard();
         } else {
-            const errText = await res.text();
-            alert(`Operation Aborted: ${errText || 'Transaction logic failure.'}`);
+            const errorMsg = await res.text();
+            alert(`Rejected: ${errorMsg}`);
         }
     } catch (err) {
-        alert('Failed to transmit balance payload data.');
+        alert('Network transmission layer fault.');
     }
 }
 
@@ -144,15 +137,15 @@ async function loadMasterLedger() {
         tbody.innerHTML = '';
         
         accounts.forEach(acc => {
-            const row = `<tr class="hover:bg-slate-700/30 transition-colors">
-                <td class="p-3 font-mono text-xs tracking-wider text-slate-400">${acc.accountNumber}</td>
-                <td class="p-3 font-medium text-slate-200">${acc.customerName}</td>
-                <td class="p-3 text-right font-bold text-emerald-400 font-mono">$${acc.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            const row = `<tr class="hover:bg-slate-800/50 border-b border-slate-800">
+                <td class="p-3 text-slate-400">${acc.accountNumber}</td>
+                <td class="p-3 text-slate-200 font-sans">${acc.customerName}</td>
+                <td class="p-3 text-right text-slate-100 font-semibold">$${acc.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             </tr>`;
             tbody.innerHTML += row;
         });
     } catch (err) {
-        alert('Could not synchronize data matrices from storage.');
+        alert('Failed to extract active data array allocations.');
     }
 }
 
@@ -163,32 +156,29 @@ async function createAccount() {
     const balanceStr = document.getElementById('adm-bal').value.trim();
 
     if (!accountNumber || !customerName || !pinStr || !balanceStr) {
-        return alert('All system entry data fields are mandatory.');
+        return alert('All system payload values required.');
     }
-
-    const pin = parseInt(pinStr);
-    const balance = parseFloat(balanceStr);
 
     try {
         const res = await fetch(`${API_URL}/account`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ accountNumber, customerName, pin, balance })
+            body: JSON.stringify({ accountNumber, customerName, pin: parseInt(pinStr), balance: parseFloat(balanceStr) })
         });
 
         if (res.ok) {
-            alert('New structural profile appended successfully into database ledger.');
+            alert('New core registry profile verified and committed.');
             loadMasterLedger();
             document.getElementById('adm-acc').value = '';
             document.getElementById('adm-name').value = '';
             document.getElementById('adm-pin').value = '';
             document.getElementById('adm-bal').value = '';
         } else {
-            const errText = await res.text();
-            alert(`Registration Failed: ${errText}`);
+            const errorMsg = await res.text();
+            alert(`Execution Aborted: ${errorMsg}`);
         }
     } catch (err) {
-        alert('Server write failure.');
+        alert('Failed to transmit registration configuration.');
     }
 }
 
@@ -196,10 +186,10 @@ async function applyMassInterest() {
     try {
         const res = await fetch(`${API_URL}/interest`, { method: 'POST' });
         if (res.ok) {
-            alert('Ledger matrices completely synchronized with 4.5% compound yields.');
+            alert('Interest yield calculation formulas executed successfully.');
             loadMasterLedger();
         }
     } catch (err) {
-        alert('Failed to run calculation macros.');
+        alert('Macro configuration runtime error.');
     }
 }
