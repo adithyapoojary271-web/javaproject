@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Core Bank Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+
+    <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold tracking-wide text-emerald-400">📊 EXCEL CORE BANK</h1>
+            <div class="space-x-2">
+                <button onclick="switchPortal('user')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded font-medium transition">User Portal</button>
+                <button onclick="switchPortal('admin')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 rounded font-medium transition">Admin Portal</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto p-6 mt-6">
+        <section id="user-login" class="bg-slate-800 p-6 rounded-lg border border-slate-700 shadow-xl max-w-md mx-auto">
+            <h2 class="text-xl font-semibold mb-4 text-slate-200">Account Holder Sign In</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm text-slate-400 mb-1">Account Number</label>
+                    <input type="text" id="login-acc" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-400 mb-1">4-Digit Security PIN</label>
+                    <input type="password" id="login-pin" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded focus:outline-none focus:border-emerald-500">
+                </div>
+                <button onclick="handleUserLogin()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 font-semibold rounded transition">Access Portal</button>
+            </div>
+        </section>
+
+        <section id="user-dashboard" class="hidden space-y-6">
+            <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 flex justify-between items-center shadow-lg">
+                <div>
+                    <p class="text-sm text-slate-400">Welcome back,</p>
+                    <h2 id="user-name" class="text-2xl font-bold text-emerald-400">...</h2>
+                    <p id="user-acc-display" class="text-xs text-slate-500 mt-0.5">Acc #: </p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-slate-400">Available Balance</p>
+                    <span id="user-balance" class="text-3xl font-extrabold text-slate-100">$0.00</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 shadow-md">
+                    <h3 class="text-lg font-semibold mb-4 border-b border-slate-700 pb-2">Quick Actions</h3>
+                    <div class="space-y-4">
+                        <input type="number" id="tx-amount" placeholder="Amount ($)" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded text-white">
+                        <div class="grid grid-cols-2 gap-4">
+                            <button onclick="executeTx('deposit')" class="py-2.5 bg-slate-700 hover:bg-slate-600 rounded font-medium transition">Deposit</button>
+                            <button onclick="executeTx('withdraw')" class="py-2.5 bg-rose-600 hover:bg-rose-500 rounded font-medium transition">Withdraw</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 shadow-md">
+                    <h3 class="text-lg font-semibold mb-3 border-b border-slate-700 pb-2">Statement History</h3>
+                    <ul id="tx-history" class="space-y-2 text-sm max-h-40 overflow-y-auto text-slate-400">
+                        </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="admin-portal" class="hidden space-y-6">
+            <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 shadow-lg flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl font-bold text-amber-400">Administrative Controls</h2>
+                    <p class="text-xs text-slate-400">Master Record Database Sync Interface</p>
+                </div>
+                <button onclick="applyMassInterest()" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 rounded text-sm font-semibold transition">Mass Rollout Interest (4.5%)</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-slate-800 p-5 rounded-lg border border-slate-700 shadow-md md:col-span-1 space-y-4">
+                    <h3 class="text-md font-semibold text-slate-300 border-b border-slate-700 pb-2">Open New Account</h3>
+                    <input type="text" id="adm-acc" placeholder="Account Number" class="w-full bg-slate-900 border border-slate-700 p-2 text-sm rounded">
+                    <input type="text" id="adm-name" placeholder="Legal Full Name" class="w-full bg-slate-900 border border-slate-700 p-2 text-sm rounded">
+                    <input type="password" id="adm-pin" placeholder="4-Digit Security PIN" class="w-full bg-slate-900 border border-slate-700 p-2 text-sm rounded">
+                    <input type="number" id="adm-bal" placeholder="Opening Deposit ($)" class="w-full bg-slate-900 border border-slate-700 p-2 text-sm rounded">
+                    <button onclick="createAccount()" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 rounded text-sm font-medium transition">Register Profile</button>
+                </div>
+
+                <div class="bg-slate-800 p-5 rounded-lg border border-slate-700 shadow-md md:col-span-2">
+                    <h3 class="text-md font-semibold text-slate-300 mb-3 border-b border-slate-700 pb-2">Master Audit Ledger</h3>
+                    <div class="overflow-x-auto max-h-64">
+                        <table class="w-full text-left text-sm">
+                            <thead>
+                                <tr class="text-slate-500 border-b border-slate-700 text-xs uppercase">
+                                    <th class="pb-2">Account</th>
+                                    <th class="pb-2">Holder</th>
+                                    <th class="pb-2 text-right">Net Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-ledger-body" class="divide-y divide-slate-700 text-slate-300">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
