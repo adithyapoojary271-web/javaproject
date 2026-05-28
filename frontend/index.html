@@ -26,6 +26,7 @@
     .glass{
       background: rgba(255,255,255,.05);
       backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       border: 1px solid rgba(255,255,255,.08);
     }
 
@@ -67,34 +68,27 @@
     }
 
     @keyframes float{
-      0%,100%{
-        transform:translateY(0px);
-      }
-      50%{
-        transform:translateY(-10px);
-      }
+      0%,100%{ transform:translateY(0px); }
+      50%{ transform:translateY(-10px); }
     }
   </style>
 </head>
 
-<body class="text-white min-h-screen">
+<body class="text-white min-h-screen flex flex-col justify-between">
 
-  <!-- NAVBAR -->
   <header class="sticky top-0 z-50 border-b border-white/10 backdrop-blur-xl bg-[#050816]/70">
     <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
 
-      <div>
+      <div class="cursor-pointer" onclick="switchPortal('user')">
         <h1 class="text-2xl font-black tracking-tight">
           Excel Core Bank
         </h1>
-
         <p class="text-xs uppercase tracking-[0.3em] text-slate-400 mt-1">
           Enterprise Banking Infrastructure
         </p>
       </div>
 
-      <div class="flex items-center gap-3">
-
+      <div id="nav-actions" class="flex items-center gap-3">
         <button
           onclick="switchPortal('user')"
           class="px-5 py-2.5 rounded-xl border border-white/10 hover:bg-white/10 transition-all text-sm"
@@ -108,17 +102,14 @@
         >
           Admin Portal
         </button>
-
       </div>
 
     </div>
   </header>
 
-  <!-- MAIN -->
-  <main class="max-w-7xl mx-auto px-6 py-14 grid lg:grid-cols-2 gap-16 items-center">
+  <main class="max-w-7xl w-full mx-auto px-6 py-14 grid lg:grid-cols-2 gap-16 items-center flex-grow">
 
-    <!-- LEFT -->
-    <section>
+    <section id="left-branding" class="transition-opacity duration-300">
 
       <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-sm mb-8">
         Secure Core Banking Engine
@@ -140,92 +131,55 @@
         secure REST APIs and a modern fintech user experience.
       </p>
 
-      <!-- STATS -->
       <div class="grid grid-cols-3 gap-5 mt-10">
-
         <div class="glass rounded-3xl p-5 card-glow">
-          <h3 class="text-3xl font-black">
-            24/7
-          </h3>
-
-          <p class="text-slate-400 mt-2 text-sm">
-            Availability
-          </p>
+          <h3 class="text-3xl font-black">24/7</h3>
+          <p class="text-slate-400 mt-2 text-sm">Availability</p>
         </div>
-
         <div class="glass rounded-3xl p-5 card-glow">
-          <h3 class="text-3xl font-black">
-            Fast
-          </h3>
-
-          <p class="text-slate-400 mt-2 text-sm">
-            Transactions
-          </p>
+          <h3 class="text-3xl font-black">Fast</h3>
+          <p class="text-slate-400 mt-2 text-sm">Transactions</p>
         </div>
-
         <div class="glass rounded-3xl p-5 card-glow">
-          <h3 class="text-3xl font-black">
-            Secure
-          </h3>
-
-          <p class="text-slate-400 mt-2 text-sm">
-            Architecture
-          </p>
+          <h3 class="text-3xl font-black">Secure</h3>
+          <p class="text-slate-400 mt-2 text-sm">Architecture</p>
         </div>
-
       </div>
 
     </section>
 
-    <!-- RIGHT -->
-    <section class="glass rounded-[32px] p-8 card-glow relative overflow-hidden">
+    <section class="glass rounded-[32px] p-8 card-glow relative overflow-hidden min-h-[500px] flex flex-col justify-center">
 
-      <!-- LOGIN -->
       <div id="login-view">
-
         <div class="flex items-center justify-between mb-10">
-
           <div>
-            <p class="text-slate-400 text-sm">
-              Welcome Back
-            </p>
-
-            <h3 class="text-4xl font-black mt-1">
-              Customer Login
-            </h3>
+            <p class="text-slate-400 text-sm">Welcome Back</p>
+            <h3 class="text-4xl font-black mt-1">Customer Login</h3>
           </div>
-
-          <div class="w-16 h-16 rounded-3xl bg-blue-600 flex items-center justify-center text-3xl animate-float">
+          <div class="w-16 h-16 rounded-3xl bg-blue-600 flex items-center justify-center text-3xl select-none data-bus-icon">
             💳
           </div>
-
         </div>
 
         <div class="space-y-5">
-
           <div>
-            <label class="block text-sm text-slate-300 mb-2">
-              Account Number
-            </label>
-
+            <label class="block text-sm text-slate-300 mb-2">Account Number</label>
             <input
               type="text"
               id="login-acc"
               placeholder="Enter account number"
-              class="w-full px-5 py-4 rounded-2xl input"
+              class="w-full px-5 py-4 rounded-2xl input text-white"
             >
           </div>
 
           <div>
-            <label class="block text-sm text-slate-300 mb-2">
-              Security PIN
-            </label>
-
+            <label class="block text-sm text-slate-300 mb-2">Security PIN</label>
             <input
               type="password"
               id="login-pin"
               placeholder="••••"
-              class="w-full px-5 py-4 rounded-2xl input"
+              maxlength="4"
+              class="w-full px-5 py-4 rounded-2xl input text-white tracking-widest"
             >
           </div>
 
@@ -235,103 +189,109 @@
           >
             Access Dashboard
           </button>
-
         </div>
-
       </div>
 
-      <!-- DASHBOARD -->
-      <div id="dashboard-view" class="hidden">
-
-        <div class="flex items-center justify-between mb-8">
-
+      <div id="dashboard-view" class="hidden space-y-6">
+        <div class="flex items-center justify-between mb-2">
           <div>
-            <p class="text-slate-400 text-sm">
-              Welcome
-            </p>
-
-            <h3 id="user-name" class="text-3xl font-black mt-1">
-              User
-            </h3>
+            <p class="text-slate-400 text-sm">Welcome back,</p>
+            <h3 id="user-name" class="text-3xl font-black mt-1 text-white">...</h3>
           </div>
-
           <button
             onclick="logout()"
-            class="px-5 py-2 rounded-xl border border-white/10 hover:bg-white/10 transition"
+            class="px-4 py-2 text-xs uppercase tracking-wider rounded-xl border border-white/10 hover:bg-white/10 transition"
           >
             Logout
           </button>
-
         </div>
 
-        <!-- BALANCE -->
-        <div class="rounded-[28px] p-7 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 shadow-2xl mb-8">
-
-          <p class="text-sm opacity-80">
-            Available Balance
-          </p>
-
-          <h2
-            id="balance"
-            class="text-5xl font-black mt-3 tracking-tight"
-          >
-            ₹0
-          </h2>
-
+        <div class="rounded-[24px] p-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 shadow-2xl">
+          <p class="text-xs uppercase tracking-wider opacity-80">Available Liquid Funds</p>
+          <h2 id="balance" class="text-4xl font-black mt-2 tracking-tight font-mono">₹0.00</h2>
         </div>
 
-        <!-- ACTION -->
-        <div class="space-y-4">
-
+        <div class="space-y-3">
           <input
             type="number"
             id="tx-amount"
-            placeholder="Enter amount"
-            class="w-full px-5 py-4 rounded-2xl input"
+            placeholder="Enter transactional value"
+            class="w-full px-5 py-3.5 rounded-xl input text-white"
           >
-
-          <div class="grid grid-cols-2 gap-4">
-
+          <div class="grid grid-cols-2 gap-3">
             <button
               onclick="executeTx('deposit')"
-              class="py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 font-semibold transition"
+              class="py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 font-bold text-sm tracking-wide transition"
             >
               Deposit
             </button>
-
             <button
               onclick="executeTx('withdraw')"
-              class="py-4 rounded-2xl bg-rose-500 hover:bg-rose-400 font-semibold transition"
+              class="py-3 rounded-xl bg-rose-500 hover:bg-rose-400 font-bold text-sm tracking-wide transition"
             >
               Withdraw
             </button>
-
           </div>
-
         </div>
 
-        <!-- TRANSACTIONS -->
-        <div class="mt-8">
-
-          <div class="flex items-center justify-between mb-4">
-
-            <h4 class="text-xl font-bold">
-              Recent Transactions
-            </h4>
-
-            <span class="text-sm text-slate-400">
-              Live Updates
-            </span>
-
+        <div class="pt-2">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="text-sm font-bold uppercase tracking-wider text-slate-300">Passbook Ledger Entries</h4>
+            <span class="text-[11px] text-slate-500">Live Sync Logs</span>
           </div>
-
           <div
             id="tx-history"
-            class="space-y-3 max-h-64 overflow-y-auto scrollbar"
-          ></div>
+            class="space-y-2 max-h-36 overflow-y-auto scrollbar pr-1 text-xs"
+          >
+            </div>
+        </div>
+      </div>
 
+      <div id="admin-view" class="hidden space-y-5">
+        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+          <div>
+            <h3 class="text-xl font-black text-white">Master Console</h3>
+            <p class="text-xs text-slate-400">Direct System Manipulation Panel</p>
+          </div>
+          <div class="flex gap-2">
+            <button 
+              onclick="applyMassInterest()" 
+              class="px-3 py-2 text-[11px] font-bold uppercase tracking-wide bg-indigo-600 hover:bg-indigo-500 rounded-lg transition"
+            >
+              Yield (4.5%)
+            </button>
+            <button 
+              onclick="logout()" 
+              class="px-3 py-2 text-[11px] font-bold uppercase tracking-wide border border-white/10 hover:bg-white/10 rounded-lg transition"
+            >
+              Exit
+            </button>
+          </div>
         </div>
 
+        <div class="grid grid-cols-1 gap-2.5 text-xs">
+          <input type="text" id="adm-acc" placeholder="Assign Account ID Number" class="w-full px-4 py-2.5 rounded-xl input text-white">
+          <input type="text" id="adm-name" placeholder="Legal Full Identity Name" class="w-full px-4 py-2.5 rounded-xl input text-white">
+          <input type="password" id="adm-pin" placeholder="Assign Verification PIN" maxlength="4" class="w-full px-4 py-2.5 rounded-xl input text-white tracking-widest">
+          <input type="number" id="adm-bal" placeholder="Opening Capital Allocation (₹)" class="w-full px-4 py-2.5 rounded-xl input text-white">
+          <button onclick="createAccount()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 font-bold uppercase tracking-wider rounded-xl transition">
+            Commit Registry Entry Row
+          </button>
+        </div>
+
+        <div class="border border-white/10 rounded-xl overflow-hidden max-h-32 overflow-y-auto scrollbar">
+          <table class="w-full text-left text-[11px] border-collapse font-mono">
+            <thead>
+              <tr class="bg-white/5 border-b border-white/10 text-slate-400 uppercase text-[10px]">
+                <th class="p-2 font-medium">Account ID</th>
+                <th class="p-2 font-medium">Holder</th>
+                <th class="p-2 font-medium text-right">Balance</th>
+              </tr>
+            </thead>
+            <tbody id="admin-ledger-body" class="divide-y divide-white/5 text-slate-300">
+              </tbody>
+          </table>
+        </div>
       </div>
 
     </section>
@@ -339,6 +299,5 @@
   </main>
 
   <script src="app.js"></script>
-
 </body>
 </html>
