@@ -1,47 +1,51 @@
+/**
+ * Core Banking System State Controller
+ * Enterprise Data Bus Communication Configuration
+ */
+
 const API_URL = 'https://javaproject-1i9k.onrender.com/api/bank';
 let currentSessionUser = null;
 
-// Initialize layout on script execution
+// Enforce safe view context configuration on boot
 window.addEventListener('DOMContentLoaded', () => {
     goToHome();
 });
 
 function goToHome() {
-    currentSessionUser = null; // Clean session state context out completely
+    currentSessionUser = null; // Clean active state context parameters completely
     
-    // Reset Navigation View Classes
-    document.getElementById('home-screen').classList.remove('hidden');
-    document.getElementById('user-login').classList.add('hidden');
-    document.getElementById('user-dashboard').classList.add('hidden');
-    document.getElementById('admin-portal').classList.add('hidden');
-    document.getElementById('nav-actions').classList.remove('hidden');
-    
-    // Purge input array data
+    // UI View Array State Switches
+    document.getElementById('user-login-view').classList.remove('hidden');
+    document.getElementById('user-dashboard-view').classList.add('hidden');
+    document.getElementById('admin-portal-view').classList.add('hidden');
+    document.getElementById('left-branding').classList.remove('opacity-30');
+    document.getElementById('header-actions').classList.remove('invisible');
+
+    // Wipe Old Inputs
     document.getElementById('login-acc').value = '';
     document.getElementById('login-pin').value = '';
 }
 
-async function switchPortal(portal) {
-    document.getElementById('home-screen').classList.add('hidden');
-    document.getElementById('user-login').classList.add('hidden');
-    document.getElementById('user-dashboard').classList.add('hidden');
-    document.getElementById('admin-portal').classList.add('hidden');
-
+function switchPortal(portal) {
     if (portal === 'user') {
         if (currentSessionUser) {
-            document.getElementById('user-dashboard').classList.remove('hidden');
-            document.getElementById('nav-actions').classList.add('hidden');
+            document.getElementById('user-login-view').classList.add('hidden');
+            document.getElementById('user-dashboard-view').classList.remove('hidden');
+            document.getElementById('admin-portal-view').classList.add('hidden');
         } else {
-            document.getElementById('user-login').classList.remove('hidden');
+            goToHome();
         }
     } else if (portal === 'admin') {
-        const pass = prompt("Provide Admin Cluster Verification Passkey:");
+        const pass = prompt("Provide Administrative System Verification Passkey:");
         if (pass === 'admin') {
-            document.getElementById('admin-portal').classList.remove('hidden');
-            document.getElementById('nav-actions').classList.add('hidden');
+            document.getElementById('user-login-view').classList.add('hidden');
+            document.getElementById('user-dashboard-view').classList.add('hidden');
+            document.getElementById('admin-portal-view').classList.remove('hidden');
+            document.getElementById('left-branding').classList.add('opacity-30');
+            document.getElementById('header-actions').classList.add('invisible');
             loadMasterLedger();
         } else {
-            alert("Security Denied: Invalid Administrative Signature.");
+            alert("Authorization Denied: Revoked Security Token.");
             goToHome();
         }
     }
@@ -51,9 +55,7 @@ async function handleUserLogin() {
     const accountNumber = document.getElementById('login-acc').value.trim();
     const pin = document.getElementById('login-pin').value.trim();
 
-    if (!accountNumber || !pin) {
-        return alert('System fault: Empty security payloads detected.');
-    }
+    if (!accountNumber || !pin) return alert('Incomplete security authorization payload.');
 
     try {
         const res = await fetch(`${API_URL}/login`, {
@@ -64,34 +66,34 @@ async function handleUserLogin() {
 
         if (res.ok) {
             currentSessionUser = await res.json();
-            currentSessionUser.pin = pin; // Cache layer code for automatic updates
+            currentSessionUser.pin = pin; // Cache tracking credentials for data binding syncs
             updateUserDashboard();
             switchPortal('user');
         } else {
-            alert('Security Rejected: Invalid operational parameters.');
+            alert('Identity Verification Aborted: Invalid Records.');
         }
     } catch (err) {
-        alert('Server network timeout. Cluster cold instance boot configuration active.');
+        alert('Connection timeout. Remote server instance is booting up from cold standby.');
     }
 }
 
 function updateUserDashboard() {
     document.getElementById('user-name').innerText = currentSessionUser.customerName.toUpperCase();
-    document.getElementById('user-acc-display').innerText = `ACCOUNT CARD REFERENCE ID: ${currentSessionUser.accountNumber}`;
+    document.getElementById('user-acc-display').innerText = `ACC ID REFS: ${currentSessionUser.accountNumber}`;
     document.getElementById('user-balance').innerText = `$${currentSessionUser.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     
     const historyList = document.getElementById('tx-history');
     historyList.innerHTML = '';
     
     if (!currentSessionUser.transactionHistory || currentSessionUser.transactionHistory.length === 0) {
-        historyList.innerHTML = `<li class="text-slate-500 italic py-2">No past ledger transactions located.</li>`;
+        historyList.innerHTML = `<li class="text-slate-500 italic py-1">No transaction records logged.</li>`;
         return;
     }
 
     [...currentSessionUser.transactionHistory].reverse().forEach(log => {
         const li = document.createElement('li');
-        li.className = "py-2.5 border-b border-slate-800 tracking-wide text-slate-300 flex items-center";
-        li.innerText = `[RECORD] > ${log}`;
+        li.className = "py-1 text-slate-300 border-b border-white/5";
+        li.innerText = `> ${log}`;
         historyList.appendChild(li);
     });
 }
@@ -100,9 +102,7 @@ async function executeTx(type) {
     const amountInput = document.getElementById('tx-amount');
     const amount = parseFloat(amountInput.value);
     
-    if (isNaN(amount) || amount <= 0) {
-        return alert('Value allocation parsing error.');
-    }
+    if (isNaN(amount) || amount <= 0) return alert('Invalid numerical data array allocation.');
 
     try {
         const res = await fetch(`${API_URL}/${type}`, {
@@ -113,6 +113,7 @@ async function executeTx(type) {
 
         if (res.ok) {
             amountInput.value = ''; 
+            // Automated state container polling update sequence
             const refresh = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -122,10 +123,10 @@ async function executeTx(type) {
             updateUserDashboard();
         } else {
             const errorMsg = await res.text();
-            alert(`Process Canceled: ${errorMsg}`);
+            alert(`Rejected: ${errorMsg}`);
         }
     } catch (err) {
-        alert('Data bus connection error.');
+        alert('Data payload bus transmission fault.');
     }
 }
 
@@ -137,15 +138,15 @@ async function loadMasterLedger() {
         tbody.innerHTML = '';
         
         accounts.forEach(acc => {
-            const row = `<tr class="hover:bg-slate-800/40 border-b border-slate-800">
-                <td class="p-3 text-slate-400 font-mono tracking-wider">${acc.accountNumber}</td>
-                <td class="p-3 text-slate-200 font-sans tracking-wide uppercase">${acc.customerName}</td>
-                <td class="p-3 text-right text-slate-100 font-semibold font-mono">$${acc.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            const row = `<tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                <td class="p-2 text-slate-400 font-mono">${acc.accountNumber}</td>
+                <td class="p-2 text-slate-200 uppercase">${acc.customerName}</td>
+                <td class="p-2 text-right text-slate-100 font-bold font-mono">$${acc.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             </tr>`;
             tbody.innerHTML += row;
         });
     } catch (err) {
-        alert('Master matrix compilation exception.');
+        alert('Data array parsing exception.');
     }
 }
 
@@ -155,9 +156,7 @@ async function createAccount() {
     const pinStr = document.getElementById('adm-pin').value.trim();
     const balanceStr = document.getElementById('adm-bal').value.trim();
 
-    if (!accountNumber || !customerName || !pinStr || !balanceStr) {
-        return alert('Incomplete structural record attributes.');
-    }
+    if (!accountNumber || !customerName || !pinStr || !balanceStr) return alert('Mandatory validation fields missing.');
 
     try {
         const res = await fetch(`${API_URL}/account`, {
@@ -167,7 +166,7 @@ async function createAccount() {
         });
 
         if (res.ok) {
-            alert('Row committed securely to permanent filesystem arrays.');
+            alert('Profile entry append successful.');
             loadMasterLedger();
             document.getElementById('adm-acc').value = '';
             document.getElementById('adm-name').value = '';
@@ -175,10 +174,10 @@ async function createAccount() {
             document.getElementById('adm-bal').value = '';
         } else {
             const errorMsg = await res.text();
-            alert(`Execution Exception: ${errorMsg}`);
+            alert(`Aborted: ${errorMsg}`);
         }
     } catch (err) {
-        alert('Row append transmission error.');
+        alert('Storage commit serialization fault.');
     }
 }
 
@@ -186,10 +185,10 @@ async function applyMassInterest() {
     try {
         const res = await fetch(`${API_URL}/interest`, { method: 'POST' });
         if (res.ok) {
-            alert('Interest calculations applied and logged uniformly across system indexes.');
+            alert('Compound yield macros updated throughout cluster rows.');
             loadMasterLedger();
         }
     } catch (err) {
-        alert('Macro parser runtime error.');
+        alert('Macro evaluation runtime error.');
     }
 }
